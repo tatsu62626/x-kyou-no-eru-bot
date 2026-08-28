@@ -10,6 +10,8 @@ import pandas as pd
 from datetime import datetime
 import os
 
+from timeutil import now_jst
+
 COLUMNS = [
     "id", "scheduled_time", "text", "media_paths",
     "status", "tweet_id", "posted_at", "error",
@@ -29,8 +31,8 @@ class ContentQueue:
         df.to_csv(self.csv_path, index=False)
 
     def get_due_posts(self, now=None):
-        """予約時刻を過ぎた未投稿(pending)の行を返す"""
-        now = now or datetime.now()
+        """予約時刻(JST)を過ぎた未投稿(pending)の行を返す"""
+        now = now or now_jst()
         df = self._load()
         if df.empty:
             return []
@@ -50,7 +52,7 @@ class ContentQueue:
         df = self._load()
         df.loc[df["id"] == post_id, "status"] = "posted"
         df.loc[df["id"] == post_id, "tweet_id"] = str(tweet_id)
-        df.loc[df["id"] == post_id, "posted_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        df.loc[df["id"] == post_id, "posted_at"] = now_jst().strftime("%Y-%m-%d %H:%M:%S")
         self._save(df)
 
     def mark_failed(self, post_id, error_message):
