@@ -16,6 +16,7 @@ from datetime import datetime
 from config import Config
 from x_client import XClient
 from content_queue import ContentQueue
+from timeutil import now_jst
 
 logging.basicConfig(
     level=logging.INFO,
@@ -31,7 +32,7 @@ def run_once(client, queue):
         logger.info("投稿予定なし")
         return
 
-    now = datetime.now()
+    now = now_jst()
     for post in due_posts:
         scheduled = datetime.strptime(post["scheduled_time"], "%Y-%m-%d %H:%M")
         delay_minutes = (now - scheduled).total_seconds() / 60
