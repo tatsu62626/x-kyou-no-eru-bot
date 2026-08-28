@@ -20,6 +20,7 @@ import logging
 from config import Config
 from x_client import XClient
 from content_queue import ContentQueue
+from timeutil import now_jst
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -51,7 +52,7 @@ def fetch_and_log():
             public = tweet.public_metrics or {}
             non_public = tweet.non_public_metrics or {}
             rows.append({
-                "fetched_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "fetched_at": now_jst().strftime("%Y-%m-%d %H:%M:%S"),
                 "post_id": row["id"],
                 "tweet_id": tweet_id,
                 "impressions": non_public.get("impression_count", ""),
